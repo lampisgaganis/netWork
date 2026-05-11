@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "app.jwt.secret",
+  "type": "java.lang.String",
+  "description": "JWT Secret Key for signing and verifying JWT tokens."
+}]}
