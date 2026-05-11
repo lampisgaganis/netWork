@@ -23,6 +23,7 @@ public class WorkExperienceService {
         private final UserRepository userRepository;
 
         public WorkExperienceResponse addWorkExperience(String email, WorkExperienceRequest request) {
+
                 User user = userRepository.findByEmail(email)
                         .orElseThrow(() -> new RuntimeException("User not found"));
                 
@@ -53,7 +54,7 @@ public class WorkExperienceService {
                         .toList();
                 }
 
-                public WorkExperienceResponse updateWorkExperience( Long id, String email, WorkExperienceRequest request) {
+        public WorkExperienceResponse updateWorkExperience( Long id, String email, WorkExperienceRequest request) {
 
                 WorkExperience workExperience = workExperienceRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Work experience not found"));
