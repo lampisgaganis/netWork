@@ -39,4 +39,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<WorkExperience> workExperiences;
 
+    @OneToMany(mappedBy = "user")
+    private List<Education> educations;
+
+    @OneToMany(mappedBy = "user")
+    private List<Skill> skills;
+
 }

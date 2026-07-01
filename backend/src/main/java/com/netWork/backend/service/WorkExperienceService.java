@@ -8,6 +8,8 @@ import com.netWork.backend.dto.WorkExperienceRequest;
 import com.netWork.backend.dto.WorkExperienceResponse;
 import com.netWork.backend.entity.User;
 import com.netWork.backend.entity.WorkExperience;
+import com.netWork.backend.exception.ResourceNotFoundException;
+import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.WorkExperienceMapper;
 import com.netWork.backend.repository.UserRepository;
 import com.netWork.backend.repository.WorkExperienceRepository;
@@ -25,7 +27,7 @@ public class WorkExperienceService {
         public WorkExperienceResponse addWorkExperience(String email, WorkExperienceRequest request) {
 
                 User user = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                 
                 WorkExperience workExperience = WorkExperience.builder()
                         .company(request.company())
@@ -46,7 +48,7 @@ public class WorkExperienceService {
 
         public List<WorkExperienceResponse> getMyWorkExperiences(String email) {
                 User user = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
                 return workExperienceRepository.findByUser(user)
                         .stream()
@@ -57,10 +59,10 @@ public class WorkExperienceService {
         public WorkExperienceResponse updateWorkExperience( Long id, String email, WorkExperienceRequest request) {
 
                 WorkExperience workExperience = workExperienceRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Work experience not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Work experience not found"));
                         
                 if (!workExperience.getUser().getEmail().equals(email)) {
-                        throw new RuntimeException("Unauthorized");
+                        throw new UnauthorizedActionException("Unauthorized");
                 }
                 
                 workExperience.setCompany(request.company());
@@ -80,10 +82,10 @@ public class WorkExperienceService {
         public void deleteWorkExperience(Long id, String email) {
 
                 WorkExperience workExperience = workExperienceRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Work experience not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Work experience not found"));
                 
                 if (!workExperience.getUser().getEmail().equals(email)) {
-                        throw new RuntimeException("Unauthorized");
+                        throw new UnauthorizedActionException("Unauthorized");
                 }
 
                 workExperienceRepository.delete(workExperience);

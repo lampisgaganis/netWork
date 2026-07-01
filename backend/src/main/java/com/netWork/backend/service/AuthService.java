@@ -9,6 +9,7 @@ import com.netWork.backend.dto.RegisterRequest;
 import com.netWork.backend.dto.UserResponse;
 import com.netWork.backend.entity.Role;
 import com.netWork.backend.entity.User;
+import com.netWork.backend.exception.DuplicateResourceException;
 import com.netWork.backend.mapper.UserMapper;
 import com.netWork.backend.repository.UserRepository;
 
@@ -26,7 +27,7 @@ public class AuthService {
 
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already in use");
+            throw new DuplicateResourceException("Email already in use");
         }
 
         if (!request.password().equals(request.confirmPassword())) {

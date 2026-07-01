@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/api/v1/educations")
+@RequestMapping("/api/v1/education")
 @RequiredArgsConstructor
 public class EducationController {
 

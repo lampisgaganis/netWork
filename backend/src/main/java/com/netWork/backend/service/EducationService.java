@@ -8,6 +8,8 @@ import com.netWork.backend.dto.EducationRequest;
 import com.netWork.backend.dto.EducationResponse;
 import com.netWork.backend.entity.Education;
 import com.netWork.backend.entity.User;
+import com.netWork.backend.exception.ResourceNotFoundException;
+import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.EducationMapper;
 import com.netWork.backend.repository.EducationRepository;
 import com.netWork.backend.repository.UserRepository;
@@ -24,7 +26,7 @@ public class EducationService {
     public EducationResponse addEducation(String email, EducationRequest request) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
         Education education = Education.builder()
                 .institution(request.institution())
@@ -45,7 +47,7 @@ public class EducationService {
 
     public List<EducationResponse> getMyEducations(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return educationRepository.findByUser(user)
                 .stream()
@@ -56,10 +58,10 @@ public class EducationService {
     public EducationResponse updateEducation( Long id, String email, EducationRequest request) {
 
         Education education = educationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Education not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Education not found"));
 
         if (!education.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedActionException("Unauthorized");
         }
 
         education.setInstitution(request.institution());
@@ -77,10 +79,10 @@ public class EducationService {
 
     public void deleteEducation(Long id, String email) {
         Education education = educationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Education not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Education not found"));
 
         if (!education.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedActionException("Unauthorized");
         }
 
         educationRepository.delete(education);
