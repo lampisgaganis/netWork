@@ -130,9 +130,9 @@ public class ConnectionService {
             throw new UnauthorizedActionException("You cannot remove this connection");
         }
 
-        /*if(connection.getStatus() != ConnectionStatus.ACCEPTED) {
+        if(connection.getStatus() != ConnectionStatus.ACCEPTED) {
             throw new InvalidRequestException("Only accepted connections can be removed");
-        }*/
+        }
 
         connectionRepository.delete(connection);
 
