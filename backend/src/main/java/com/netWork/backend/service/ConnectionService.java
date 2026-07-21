@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.netWork.backend.dto.ConnectionResponse;
+import com.netWork.backend.dto.UserResponse;
 import com.netWork.backend.entity.Connection;
 import com.netWork.backend.entity.ConnectionStatus;
 import com.netWork.backend.entity.User;
@@ -14,6 +15,7 @@ import com.netWork.backend.exception.InvalidRequestException;
 import com.netWork.backend.exception.ResourceNotFoundException;
 import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.ConnectionMapper;
+import com.netWork.backend.mapper.UserMapper;
 import com.netWork.backend.repository.ConnectionRepository;
 import com.netWork.backend.repository.UserRepository;
 
@@ -93,6 +95,46 @@ public class ConnectionService {
 
         connection.setStatus(ConnectionStatus.REJECTED);
 
-        connectionRepository.save(connection);
+        connectionRepository.delete(connection);
+    }
+
+    public List<UserResponse> getConnections(User user) {
+
+        List<Connection> connections = connectionRepository.findAcceptedConnections(
+            user, 
+            ConnectionStatus.ACCEPTED
+        );
+
+        return connections.stream().map(connection -> {
+
+            User otherUser =
+                    connection.getSender().getId()
+                    .equals(user.getId())
+                    ? connection.getReceiver()
+                    : connection.getSender();
+
+            return UserMapper.toResponse(otherUser);
+
+        })
+        .toList();
+    }
+
+    public void removeConnection(Long connectionId, User user) {
+        Connection connection = connectionRepository.findById(connectionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Connection not found"));
+        
+        boolean isSender = connection.getSender().getId().equals(user.getId());
+        boolean isReceiver = connection.getReceiver().getId().equals(user.getId());
+
+        if(!isSender && !isReceiver) {
+            throw new UnauthorizedActionException("You cannot remove this connection");
+        }
+
+        /*if(connection.getStatus() != ConnectionStatus.ACCEPTED) {
+            throw new InvalidRequestException("Only accepted connections can be removed");
+        }*/
+
+        connectionRepository.delete(connection);
+
     }
 }

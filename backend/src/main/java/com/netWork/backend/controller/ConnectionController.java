@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netWork.backend.dto.ConnectionResponse;
+import com.netWork.backend.dto.UserResponse;
+import com.netWork.backend.entity.User;
 import com.netWork.backend.security.CurrentUserService;
 import com.netWork.backend.service.ConnectionService;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/v1/connections")
@@ -57,4 +61,18 @@ public class ConnectionController {
         connectionService.rejectRequest(connectionId, currentUserService.getCurrentUser(authentication));
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping
+    public List<UserResponse> getConnections(Authentication authentication) {
+        User user = currentUserService.getCurrentUser(authentication);
+        return connectionService.getConnections(user);
+    }
+
+    @DeleteMapping("/{connectionId}")
+    public ResponseEntity<Void> removeConnection(@PathVariable Long connectionId, Authentication authentication){
+        User user = currentUserService.getCurrentUser(authentication);
+        connectionService.removeConnection(connectionId, user);
+        return ResponseEntity.noContent().build();
+    }
+    
 }
