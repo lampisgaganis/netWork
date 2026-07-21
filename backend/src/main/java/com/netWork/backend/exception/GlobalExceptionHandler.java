@@ -58,4 +58,18 @@ public class GlobalExceptionHandler {
             request.getRequestURI()
         );
     }
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequest(
+        InvalidRequestException ex,
+        HttpServletRequest request
+    ) {
+        return new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
 }

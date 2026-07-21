@@ -30,6 +30,14 @@ public class SecurityConfig {
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, ex) -> {
+                    response.sendError(401,"Unauthorized");
+                })
+                .accessDeniedHandler((request, response, ex) -> {
+                    response.sendError(403,"Forbidden");
+                })
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll() 
                 .anyRequest().authenticated()

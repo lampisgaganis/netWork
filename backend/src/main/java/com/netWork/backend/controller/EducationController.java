@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netWork.backend.dto.EducationRequest;
 import com.netWork.backend.dto.EducationResponse;
+import com.netWork.backend.security.CurrentUserService;
 import com.netWork.backend.service.EducationService;
 
 import jakarta.validation.Valid;
@@ -29,24 +30,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class EducationController {
 
     private final EducationService educationService;
+    private final CurrentUserService currentUserService;
 
     @PostMapping
     public EducationResponse addEducation(Authentication authentication, @Valid @RequestBody EducationRequest request) {
-        return educationService.addEducation(authentication.getName(), request);
+        return educationService.addEducation(currentUserService.getCurrentUser(authentication), request);
     }
 
     @GetMapping
     public List<EducationResponse> getEducation(Authentication authentication) {
-        return educationService.getMyEducations(authentication.getName());
+        return educationService.getMyEducations(currentUserService.getCurrentUser(authentication));
     }
     
     @PutMapping("/{id}")
     public EducationResponse updateEducation(@PathVariable Long id, Authentication authentication, @Valid @RequestBody EducationRequest request) {
-        return educationService.updateEducation(id, authentication.getName(), request);
+        return educationService.updateEducation(id, currentUserService.getCurrentUser(authentication), request);
     }
 
     @DeleteMapping("/{id}")
     public void deleteEducation(@PathVariable Long id, Authentication authentication) {
-        educationService.deleteEducation(id, authentication.getName());
+        educationService.deleteEducation(id, currentUserService.getCurrentUser(authentication));
     }
 }

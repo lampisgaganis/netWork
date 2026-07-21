@@ -2,9 +2,6 @@ package com.netWork.backend.security;
 
 import com.netWork.backend.entity.User;
 
-import java.util.List;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +16,13 @@ public class CustomUserDetailsService implements UserDetailsService{
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         
-        User user = userRepository.findByEmail(email)
+        Long userId = Long.parseLong(id);
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(
-                    new SimpleGrantedAuthority(
-                        "ROLE_" + user.getRole().name()  
-                    )
-                )
-        );
+        return new CustomUserDetails(user);
     }
 }

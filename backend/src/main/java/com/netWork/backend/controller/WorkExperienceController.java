@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netWork.backend.dto.WorkExperienceRequest;
 import com.netWork.backend.dto.WorkExperienceResponse;
+import com.netWork.backend.security.CurrentUserService;
 import com.netWork.backend.service.WorkExperienceService;
 
 import jakarta.validation.Valid;
@@ -27,28 +28,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class WorkExperienceController {
 
     private final WorkExperienceService workExperienceService;
+    private final CurrentUserService currentUserService;
 
     @PostMapping
     public WorkExperienceResponse addWorkExperience (Authentication authentication,@Valid @RequestBody WorkExperienceRequest request) {
         
         return workExperienceService.addWorkExperience(
-                authentication.getName(),
+                currentUserService.getCurrentUser(authentication),
                 request
         );
     }
 
     @GetMapping
     public List<WorkExperienceResponse> getMyWorkExperiences (Authentication authentication) {
-        return workExperienceService.getMyWorkExperiences(authentication.getName());
+        return workExperienceService.getMyWorkExperiences(currentUserService.getCurrentUser(authentication));
     }
 
     @PutMapping("/{id}")
     public WorkExperienceResponse updateWorkExperience(@PathVariable Long id, Authentication authentication, @Valid @RequestBody WorkExperienceRequest request) {
-        return workExperienceService.updateWorkExperience(id, authentication.getName(), request);
+        return workExperienceService.updateWorkExperience(id, currentUserService.getCurrentUser(authentication), request);
     }
 
     @DeleteMapping("/{id}")
     public void deleteWorkExperience(@PathVariable Long id, Authentication authentication) {
-        workExperienceService.deleteWorkExperience(id, authentication.getName());
+        workExperienceService.deleteWorkExperience(id, currentUserService.getCurrentUser(authentication));
     }
 }

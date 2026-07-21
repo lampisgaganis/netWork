@@ -12,7 +12,6 @@ import com.netWork.backend.exception.ResourceNotFoundException;
 import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.SkillMapper;
 import com.netWork.backend.repository.SkillRepository;
-import com.netWork.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,11 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class SkillService {
 
     private final SkillRepository skillRepository;
-    private final UserRepository userRepository;
 
-    public SkillResponse addSkill(String email, SkillRequest request) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public SkillResponse addSkill(User user, SkillRequest request) {
         
         Skill skill = Skill.builder()
             .name(request.name())
@@ -37,10 +33,7 @@ public class SkillService {
         return SkillMapper.toResponse(saved);
     }
 
-    public List<SkillResponse> getSkills(String email) {
-        
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public List<SkillResponse> getSkills(User user) {
         
         List<Skill> skills = skillRepository.findByUser(user);
         
@@ -49,12 +42,12 @@ public class SkillService {
             .toList();
     }
 
-    public SkillResponse updateSkill(Long id, String email, SkillRequest request) {
+    public SkillResponse updateSkill(Long id, User user, SkillRequest request) {
 
         Skill skill = skillRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
 
-        if (!skill.getUser().getEmail().equals(email)) {
+        if (!skill.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedActionException("Unauthorized");
         }
 
@@ -64,11 +57,11 @@ public class SkillService {
         return SkillMapper.toResponse(updated);
     }
 
-    public void deleteSkill(Long id, String email) {
+    public void deleteSkill(Long id, User user) {
         Skill skill = skillRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
 
-        if (!skill.getUser().getEmail().equals(email)) {
+        if (!skill.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedActionException("Unauthorized");
         }
 

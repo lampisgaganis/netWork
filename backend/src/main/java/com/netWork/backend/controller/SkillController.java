@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netWork.backend.dto.SkillRequest;
 import com.netWork.backend.dto.SkillResponse;
+import com.netWork.backend.security.CurrentUserService;
 import com.netWork.backend.service.SkillService;
 
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class SkillController {
     
     private final SkillService skillService;
+    private final CurrentUserService currentUserService;
 
     @PostMapping
     public SkillResponse addSkill(
@@ -36,22 +38,22 @@ public class SkillController {
         @Valid @RequestBody SkillRequest request
     )
     {
-        return skillService.addSkill(authentication.getName(), request);
+        return skillService.addSkill(currentUserService.getCurrentUser(authentication), request);
     }
     
     @GetMapping
     public List<SkillResponse> getSkills(Authentication authentication) {
-        return skillService.getSkills(authentication.getName());
+        return skillService.getSkills(currentUserService.getCurrentUser(authentication));
     }
     
     @PutMapping("/{id}")
     public SkillResponse updateSkill(@PathVariable Long id, Authentication authentication, @Valid @RequestBody SkillRequest request) {
-        return skillService.updateSkill(id, authentication.getName(), request);
+        return skillService.updateSkill(id, currentUserService.getCurrentUser(authentication), request);
     }
 
     @DeleteMapping("/{id}")
     public void deleteSkill(@PathVariable Long id, Authentication authentication) {
-        skillService.deleteSkill(id, authentication.getName());
+        skillService.deleteSkill(id, currentUserService.getCurrentUser(authentication));
     }
 
 }

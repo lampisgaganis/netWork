@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netWork.backend.dto.UserResponse;
-import com.netWork.backend.service.UserService;
+import com.netWork.backend.mapper.UserMapper;
+import com.netWork.backend.security.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,10 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
-
     @GetMapping("/me")
     public UserResponse getCurrentUser(Authentication authentication) {
-        return userService.getCurrentUser(authentication.getName());
+        
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+        return UserMapper.toResponse(details.getUser());
     }
 }

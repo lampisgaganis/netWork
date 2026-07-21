@@ -10,6 +10,7 @@ import com.netWork.backend.dto.UserResponse;
 import com.netWork.backend.entity.Role;
 import com.netWork.backend.entity.User;
 import com.netWork.backend.exception.DuplicateResourceException;
+import com.netWork.backend.exception.InvalidRequestException;
 import com.netWork.backend.mapper.UserMapper;
 import com.netWork.backend.repository.UserRepository;
 
@@ -51,14 +52,14 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
-                    .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                    .orElseThrow(() -> new InvalidRequestException("Invalid email or password"));
 
         if(!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidRequestException("Invalid email or password");
         }
 
         return new AuthResponse(
-                jwtService.generateToken(user.getEmail()), 
+                jwtService.generateToken(user), 
                 UserMapper.toResponse(user)
         );
     }

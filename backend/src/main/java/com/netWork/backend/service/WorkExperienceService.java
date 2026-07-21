@@ -11,7 +11,6 @@ import com.netWork.backend.entity.WorkExperience;
 import com.netWork.backend.exception.ResourceNotFoundException;
 import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.WorkExperienceMapper;
-import com.netWork.backend.repository.UserRepository;
 import com.netWork.backend.repository.WorkExperienceRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class WorkExperienceService {
     
         private final WorkExperienceRepository workExperienceRepository;
-        private final UserRepository userRepository;
 
-        public WorkExperienceResponse addWorkExperience(String email, WorkExperienceRequest request) {
-
-                User user = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        public WorkExperienceResponse addWorkExperience(User user, WorkExperienceRequest request) {
                 
                 WorkExperience workExperience = WorkExperience.builder()
                         .company(request.company())
@@ -46,9 +41,7 @@ public class WorkExperienceService {
 
         }
 
-        public List<WorkExperienceResponse> getMyWorkExperiences(String email) {
-                User user = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        public List<WorkExperienceResponse> getMyWorkExperiences(User user) {
 
                 return workExperienceRepository.findByUser(user)
                         .stream()
@@ -56,12 +49,12 @@ public class WorkExperienceService {
                         .toList();
                 }
 
-        public WorkExperienceResponse updateWorkExperience( Long id, String email, WorkExperienceRequest request) {
+        public WorkExperienceResponse updateWorkExperience( Long id, User user, WorkExperienceRequest request) {
 
                 WorkExperience workExperience = workExperienceRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Work experience not found"));
                         
-                if (!workExperience.getUser().getEmail().equals(email)) {
+                if (!workExperience.getUser().getId().equals(user.getId())) {
                         throw new UnauthorizedActionException("Unauthorized");
                 }
                 
@@ -79,12 +72,12 @@ public class WorkExperienceService {
         
         }
 
-        public void deleteWorkExperience(Long id, String email) {
+        public void deleteWorkExperience(Long id, User user) {
 
                 WorkExperience workExperience = workExperienceRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Work experience not found"));
                 
-                if (!workExperience.getUser().getEmail().equals(email)) {
+                if (!workExperience.getUser().getId().equals(user.getId())) {
                         throw new UnauthorizedActionException("Unauthorized");
                 }
 

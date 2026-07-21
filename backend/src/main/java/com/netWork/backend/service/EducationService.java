@@ -12,7 +12,6 @@ import com.netWork.backend.exception.ResourceNotFoundException;
 import com.netWork.backend.exception.UnauthorizedActionException;
 import com.netWork.backend.mapper.EducationMapper;
 import com.netWork.backend.repository.EducationRepository;
-import com.netWork.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +20,9 @@ import lombok.RequiredArgsConstructor;
 public class EducationService {
 
     private final EducationRepository educationRepository;
-    private final UserRepository userRepository;
 
-    public EducationResponse addEducation(String email, EducationRequest request) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+    public EducationResponse addEducation(User user, EducationRequest request) {
+ 
         Education education = Education.builder()
                 .institution(request.institution())
                 .degree(request.degree())
@@ -45,9 +40,7 @@ public class EducationService {
 
     }
 
-    public List<EducationResponse> getMyEducations(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public List<EducationResponse> getMyEducations(User user) {
 
         return educationRepository.findByUser(user)
                 .stream()
@@ -55,12 +48,12 @@ public class EducationService {
                 .toList();
     }
     
-    public EducationResponse updateEducation( Long id, String email, EducationRequest request) {
+    public EducationResponse updateEducation( Long id, User user, EducationRequest request) {
 
         Education education = educationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Education not found"));
 
-        if (!education.getUser().getEmail().equals(email)) {
+        if (!education.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedActionException("Unauthorized");
         }
 
@@ -77,11 +70,11 @@ public class EducationService {
         return EducationMapper.toResponse(updated);
     }
 
-    public void deleteEducation(Long id, String email) {
+    public void deleteEducation(Long id, User user) {
         Education education = educationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Education not found"));
 
-        if (!education.getUser().getEmail().equals(email)) {
+        if (!education.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedActionException("Unauthorized");
         }
 
