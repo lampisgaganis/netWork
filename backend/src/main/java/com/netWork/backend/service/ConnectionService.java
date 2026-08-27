@@ -1,6 +1,5 @@
 package com.netWork.backend.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -47,7 +46,6 @@ public class ConnectionService {
             .sender(sender)
             .receiver(receiver)
             .status(ConnectionStatus.PENDING)
-            .createdAt(LocalDateTime.now())
             .build();
         
         connectionRepository.save(connection);

@@ -32,7 +32,7 @@ public class AuthService {
         }
 
         if (!request.password().equals(request.confirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
+            throw new InvalidRequestException("Passwords do not match");
         }
 
         User user = User.builder()

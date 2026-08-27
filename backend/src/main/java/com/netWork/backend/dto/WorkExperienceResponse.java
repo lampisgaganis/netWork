@@ -9,6 +9,5 @@ public record WorkExperienceResponse(
     String description,
     LocalDate startDate,
     LocalDate endDate,
-    boolean currentlyWorking,
-    boolean isPublic
+    boolean currentlyWorking
 ) {}

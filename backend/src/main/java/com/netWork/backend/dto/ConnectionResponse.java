@@ -1,6 +1,6 @@
 package com.netWork.backend.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.netWork.backend.entity.ConnectionStatus;
 
@@ -10,7 +10,5 @@ public record ConnectionResponse(
     String senderName,
     String senderPhoto,
     ConnectionStatus status,
-    LocalDateTime createdAt
-) {
-
-}
+    Instant createdAt
+) {}

@@ -29,8 +29,6 @@ public class WorkExperience {
 
     private boolean currentlyWorking;
 
-    private boolean isPublic;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

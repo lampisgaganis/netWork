@@ -7,11 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -20,21 +17,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Connection {
+public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @Column(length = 3000, nullable = false)
+    private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    private ConnectionStatus status;
+    private PostVisibility visibility;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -42,4 +37,9 @@ public class Connection {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id" , nullable = false)
+    private User author;
+
 }

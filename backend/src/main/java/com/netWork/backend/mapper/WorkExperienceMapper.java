@@ -12,8 +12,7 @@ public class WorkExperienceMapper {
             workExperience.getDescription(),
             workExperience.getStartDate(),
             workExperience.getEndDate(),
-            workExperience.isCurrentlyWorking(),
-            workExperience.isPublic()
+            workExperience.isCurrentlyWorking()
         );
     }
 }

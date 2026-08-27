@@ -30,7 +30,6 @@ public class EducationService {
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .currentlyStudying(request.currentlyStudying())
-                .isPublic(request.isPublic())
                 .user(user)
                 .build();
         
@@ -63,7 +62,6 @@ public class EducationService {
         education.setStartDate(request.startDate());
         education.setEndDate(request.endDate());
         education.setCurrentlyStudying(request.currentlyStudying());
-        education.setPublic(request.isPublic());
 
         Education updated = educationRepository.save(education);
 

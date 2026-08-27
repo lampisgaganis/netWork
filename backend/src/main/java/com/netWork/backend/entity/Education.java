@@ -29,8 +29,6 @@ public class Education {
 
     private boolean currentlyStudying;
 
-    private boolean isPublic;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

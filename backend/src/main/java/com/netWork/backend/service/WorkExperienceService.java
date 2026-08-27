@@ -31,7 +31,6 @@ public class WorkExperienceService {
                         .startDate(request.startDate())
                         .endDate(request.endDate())
                         .currentlyWorking(request.currentlyWorking())
-                        .isPublic(request.isPublic())
                         .user(user)
                         .build();
                 
@@ -64,7 +63,6 @@ public class WorkExperienceService {
                 workExperience.setStartDate(request.startDate());
                 workExperience.setEndDate(request.endDate());
                 workExperience.setCurrentlyWorking(request.currentlyWorking());
-                workExperience.setPublic(request.isPublic());
 
                 WorkExperience saved = workExperienceRepository.save(workExperience);
 

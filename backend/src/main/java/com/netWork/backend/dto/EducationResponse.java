@@ -9,6 +9,5 @@ public record EducationResponse(
     String fieldOfStudy,
     LocalDate startDate,
     LocalDate endDate,
-    boolean currentlyStudying,
-    boolean isPublic
+    boolean currentlyStudying
 ) {}

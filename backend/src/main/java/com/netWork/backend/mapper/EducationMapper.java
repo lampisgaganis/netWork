@@ -13,8 +13,7 @@ public class EducationMapper {
             education.getFieldOfStudy(),
             education.getStartDate(),
             education.getEndDate(),
-            education.isCurrentlyStudying(),
-            education.isPublic()
+            education.isCurrentlyStudying()
         );
     }
 

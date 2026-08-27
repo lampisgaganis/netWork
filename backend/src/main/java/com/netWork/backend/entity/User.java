@@ -45,4 +45,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Skill> skills;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Post> posts;
+
 }
